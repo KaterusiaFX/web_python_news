@@ -1,5 +1,4 @@
 venv/
 .idea/
 __pycache__/
-server_proba.py
-weather_proba.py
+webapp/config.py

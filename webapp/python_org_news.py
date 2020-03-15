@@ -1,6 +1,7 @@
 import requests
+
 # библиотека берет на вход строку с html, преобразует в дерево элементов, среди которых
-# можно днлать поиск, добавлять, убавлять, получать контент.
+# можно делать поиск, добавлять, убавлять, получать контент.
 # BeautifulSoup так же убирает часть огрехов html док-ов
 from bs4 import BeautifulSoup
 
@@ -34,7 +35,3 @@ def get_python_news():
             })
         return result_news  # это будет список словарей, в каждом будет title, url, published
     return False
-
-if __name__ == "__main__":
-
-            print(news)

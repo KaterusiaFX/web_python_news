@@ -1,14 +1,15 @@
+from flask import current_app  # позволяет обращаться к текущему flask приложению
 import requests
 
 
 def weather_by_city(city_name):
-    weather_url = "http://api.worldweatheronline.com/premium/v1/weather.ashx"
+    weather_url = current_app.config['WEARHER_URL']
     params = {
-        "key": "9833c3370b9d48c3816110048200203",
-        "q": city_name, # параметр q указывает на город
-        "format": "json", # ,будет выводится в формате json
-        "num_of_days": 1, # погода за 1 день
-        "lang": "ru" # на русском языке
+        "key": current_app.config['WEATHER_API_KEY'],
+        "q": city_name,  # параметр q указывает на город
+        "format": "json",  # ,будет выводится в формате json
+        "num_of_days": 1,  # погода за 1 день
+        "lang": "ru"  # на русском языке
     }
 
     try:
