@@ -1,10 +1,8 @@
+from datetime import datetime
 import requests
-
-# библиотека берет на вход строку с html, преобразует в дерево элементов, среди которых
-# можно делать поиск, добавлять, убавлять, получать контент.
-# BeautifulSoup так же убирает часть огрехов html док-ов
 from bs4 import BeautifulSoup
 
+from webapp.model import db, News
 
 def get_html(url):
     try:
@@ -16,7 +14,6 @@ def get_html(url):
         return False
 
 
-# ф-я для создания дерева из html и для осущ-я поиска нужного эл-та
 def get_python_news():
     html = get_html("https://www.python.org/blogs/")
     if html:
@@ -27,11 +24,17 @@ def get_python_news():
             title = news.find('a').text
             url = news.find('a')['href']
             published = news.find('time').text
-            result_news.append({
-                "title": title,
-                "url": url,
-                "published": published
+            try:
+                published = datetime.strptime(published, '%Y-%m-%d')
+            except ValueError:
+                published = datetime.now()
+            save_news(title, url, published)
 
-            })
-        return result_news  # это будет список словарей, в каждом будет title, url, published
-    return False
+
+def save_news(title, url, published):
+    news_exists = News.query.filter(News.url == url).count()
+    if not news_exists:
+        new_news = News(title=title, url=url, published=published)
+        db.session.add(new_news)
+        db.session.commit()
+
