@@ -1,5 +1,10 @@
+# client for collecting news from www.python.org
 import requests
+
+from datetime import datetime
 from bs4 import BeautifulSoup
+
+from webapp.model import db, News
 
 
 def get_html(url):  # get html page from https://www.python.org/blogs/.
@@ -18,15 +23,23 @@ def get_python_news():  # choose <ul> with news, then choose only title, url, da
         soup = BeautifulSoup(html, 'html.parser')
         all_news = soup.find('ul', class_='list-recent-posts')
         all_news = all_news.findAll('li')
-        result_news = []
         for news in all_news:
             title = news.find('a').text
             url = news.find('a')['href']
             published = news.find('time').text
-            result_news.append({
-                "title": title,
-                "url": url,
-                "published": published
-            })
-        return result_news
+            try:
+                published = datetime.strptime(published, '%Y-%m-%d')  # strptime parsing string in Y-m_d format
+            except ValueError:
+                published = datetime.now()
+            save_news(title, url, published)
     return False
+
+
+def save_news(title, url, published):
+    news_exists = News.query.filter(News.url == url).count()
+    if not news_exists:
+        new_news = News(title=title, url=url, published=published)
+        db.session.add(new_news)
+        db.session.commit()
+
+

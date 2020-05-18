@@ -1,13 +1,14 @@
 # Сlient goes on worldweatheronline.com using API and returns data with weather info.
 
+from flask import current_app
 import requests
 
 
 # I get API at worldweatheronline.com. It includes: key, q, format, num_of_days, lang
 def weather_by_city(city_name):
-    weather_url = "http://api.worldweatheronline.com/premium/v1/weather.ashx"
+    weather_url = current_app.config["WEATHER_URL"]
     params = {
-        "key": "1eab5659489b4e29ac5124654201405",
+        "key": current_app.config["WEATHER_API_KEY"],
         "q": city_name,
         "format": "json",
         "num_of_days": 1,
