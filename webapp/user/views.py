@@ -13,7 +13,7 @@ def login():
         return redirect(url_for('news.index'))
     title = "Авторизация"
     login_form = LoginForm()
-    return render_template('login.html', page_title=title, form=login_form)
+    return render_template('user/login.html', page_title=title, form=login_form)
 
 
 @blueprint.route('/process-login', methods=['POST'])
@@ -24,7 +24,7 @@ def process_login():
         if user and user.check_password(form.password.data):
             login_user(user, remember=form.remember_me.data)  # flask login_user implements login
             flash('вы успешно вошли на сайт')
-            return redirect(url_for('index'))
+            return redirect(url_for('news.index'))
     flash('Неправильное имя или пароль')
     return redirect(url_for('user.login'))
 
